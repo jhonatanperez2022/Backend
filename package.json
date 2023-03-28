@@ -11,10 +11,14 @@
   },
   "keywords": [],
   "author": "",
+  "type": "module",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/jhonatanperez2022/Backend/issues"
   },
   "homepage": "https://github.com/jhonatanperez2022/Backend#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
