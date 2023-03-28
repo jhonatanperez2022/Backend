@@ -10,15 +10,16 @@ app.use(express.urlencoded({ extended: true }));
 const products = new ProductManager();
 
 
-const showGames = products.getProducts()
-
 app.get("/products", async (req, res) => {
 
-    let limit = parseInt(req.query.limit);
-    if(!limit) return console.log(showGames)
-    let allProducts = await showGames
-    let productLimit = allProducts.slice(0, limit)
-    console.log(productLimit)
+    const showGames = await products.getProducts()
+
+    let limit = (req.query.limit);
+    if(limit > 0){
+        const limitProducts = showGames.splice(0, limit);
+        return res.send(limitProducts)
+    }
+    return res.send(showGames);
 });
 
 const PORT = 8080;

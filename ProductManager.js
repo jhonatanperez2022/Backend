@@ -33,7 +33,7 @@ class ProductManager {
 
     getProducts = async () => {
         let allGames = await fs.readFile(this.path, "utf-8")
-        console.log(JSON.parse(allGames))
+        return JSON.parse(allGames)
     }
 
 
