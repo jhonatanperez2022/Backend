@@ -7,7 +7,7 @@ import fs from "fs/promises";
 class ProductManager {
 
     constructor() {
-        this.path = "./products.txt"
+        this.path = "./src/products.txt"
         this.products = [];
     }
 
