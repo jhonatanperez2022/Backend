@@ -54,7 +54,6 @@ class CartManager {
 
         cartExist.product.push({ id: prodId, quantity: 1 });
         let newCart = [cartExist, ...filterCart]
-        // let newCart = [{ id: cartId, product: [{ id: prodId, quantity: 1}]}, ...filterCart]
         await this.writeCart(newCart)
         return "Juego agregado al carrito"
     }
