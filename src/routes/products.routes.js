@@ -4,6 +4,9 @@ import ProductManager from "../ProductManager.js";
 const gamesRouter = Router()
 const products = new ProductManager();
 
+
+
+
 gamesRouter.post("/", async (req, res) => {
     let newProduct = req.body
     res.send( await products.addProduct(newProduct))
