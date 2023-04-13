@@ -37,6 +37,7 @@ app.get('/', async (req, res) => {
 
 
 const products = []
+const todosLosProductos = await games.getProducts()
 
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => {
@@ -47,7 +48,9 @@ const socketServer = new Server(httpServer);
 socketServer.on('connection', socket => {
     console.log('Nuevo cliente conectado')
     
+    socket.emit('todosLosProductos', todosLosProductos)
     socket.emit('productList', products);
+
 
     socket.on('addProduct', async (data) => {
         products.push(data);

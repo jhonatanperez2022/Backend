@@ -6,7 +6,7 @@
         <img id="productImg" src={{this.thumbnails}} alt={{this.title}} width="200vw">
         <p id="productDescription">{{this.description}}</p>
         <h3 id="productPrice">{{this.price}} USD</h3>
-        <button id="addGame" onClick="addProduct({{this.title}})">Add Product</button>
+        <button id="addGame" onclick='addProduct(`{{this.title}}`)'>Add Product</button>
         <button onClick="deleteProduct({{this.title}})">Delete Product</button>
         {{/each}}
     </div>
@@ -18,20 +18,35 @@
     
     
 
+
+
+
     const addProduct = (title) => {
+
+    socket.on('todosLosProductos',  async (data1) => {
         
-        socket.on('productList', async (data) => {
-            let findGame = data.find(game => game.title === title)
-            if(!findGame){
-                let newProduct = { name: findGame.title, price: findGame.price}
-                socket.emit('addProduct', newProduct)
+        socket.on('productList', (data2) => {
+            let findinGame = data2.some(game => game.title === title)
+
+            let searchGame = data1.find(game => game.title === title)
+
+            if(!findinGame){
+                let newProduct = { name: searchGame.title, price: searchGame.price }
+                console.log('Juego agregado!')
+                return socket.emit('addProduct', newProduct)
             }
-            else{
-                return "Juego ya agregado!"
+            else {
+                return console.log('Juego existente!')
             }
+            
+
         })
-    }
-        
+
+    })
+        }
+
+            
+    
     
     
 
