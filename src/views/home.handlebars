@@ -1,0 +1,38 @@
+<div>
+    <h1>Bienvenido a {{name}}</h1>
+    <div>
+        {{#each allGames}}
+        <h2 id="productName">{{this.title}}</h2>
+        <img id="productImg" src={{this.thumbnails}} alt={{this.title}} width="200vw">
+        <p id="productDescription">{{this.description}}</p>
+        <h3 id="productPrice">{{this.price}} USD</h3>
+        <button id="addGame" onClick="addProduct({{this.title}})">Add Product</button>
+        <button onClick="deleteProduct({{this.title}})">Delete Product</button>
+        {{/each}}
+    </div>
+    <div id="productsList"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
+<script>
+    const socket = io()
+    
+    
+
+    const addProduct = (title) => {
+        
+        socket.on('productList', async (data) => {
+            let findGame = data.find(game => game.title === title)
+            if(!findGame){
+                let newProduct = { name: findGame.title, price: findGame.price}
+                socket.emit('addProduct', newProduct)
+            }
+            else{
+                return "Juego ya agregado!"
+            }
+        })
+    }
+        
+    
+    
+
+</script>

@@ -28,7 +28,7 @@ app.set('views', viewsPath);
 
 app.get('/', async (req, res) => {
     const allGames = await games.getProducts()
-    res.render('greetings', {
+    res.render('home', {
         name: 'TricoJuegos',
         allGames: allGames
 
@@ -36,7 +36,7 @@ app.get('/', async (req, res) => {
 })
 
 
-
+const products = []
 
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => {
@@ -46,6 +46,14 @@ const socketServer = new Server(httpServer);
 
 socketServer.on('connection', socket => {
     console.log('Nuevo cliente conectado')
+    
+    socket.emit('productList', products);
+
+    socket.on('addProduct', async (data) => {
+        products.push(data);
+        socket.emit('productList', products)
+    })
+
 })
 
 // httpServer.on("error", (error) => console.log(`Error del servidor ${error}`))
