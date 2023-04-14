@@ -6,48 +6,94 @@
         <img id="productImg" src={{this.thumbnails}} alt={{this.title}} width="200vw">
         <p id="productDescription">{{this.description}}</p>
         <h3 id="productPrice">{{this.price}} USD</h3>
-        <button id="addGame" onclick='addProduct(`{{this.title}}`)'>Add Product</button>
-        <button onClick="deleteProduct({{this.title}})">Delete Product</button>
+        <button id="addGame" onclick='addProduct(`{{this.title}}, {{this.price}}, {{this.thumbnails}}`)'>Add Product</button>
+        <button onClick='deleteProduct(`{{this.title}}`)'>Delete Product</button>
         {{/each}}
     </div>
-    <div id="productsList"></div>
+    <div id="productsList">
+
+    </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
 <script>
+
     const socket = io()
     
+    let productsHtml = document.getElementById('productsList')
     
 
+       //Aqui no me toma el price ni el img, si hago console.log de ellos me sale undefined,
+       // y al dibjar en el HTML solo me toma la key de title, la de price y thumbnail no se toman en cuenta..
 
 
-
-    const addProduct = (title) => {
-
-    socket.on('todosLosProductos',  async (data1) => {
-        
-        socket.on('productList', (data2) => {
-            let findinGame = data2.some(game => game.title === title)
-
-            let searchGame = data1.find(game => game.title === title)
-
-            if(!findinGame){
-                let newProduct = { name: searchGame.title, price: searchGame.price }
-                console.log('Juego agregado!')
-                return socket.emit('addProduct', newProduct)
-            }
-            else {
-                return console.log('Juego existente!')
-            }
-            
-
-        })
-
-    })
+        function addProduct (title, price, img){
+            let newProduct = {  title: title, price: price thumbnail: img}
+            console.log('juego agregado')
+            socket.emit('addProduct', newProduct)
+            socket.on('productList', (data) => {
+                console.log(data);
+            })
         }
 
+
+        function deleteProduct (title) {
+            socket.emit('deleteProduct', title)
+            console.log('Producto eliminado')
+        }
+
+
+        function makeProductList(products) {
+        if (products.length === 0) {
+        return `<br />
+        <br />
+        <div>There is no products yet</div>`;
+        } else {
+            console.log(products)
+        return products
+        .map((game) => {
+        return `<div style='width:80%'>
+        <p>  Product Name: ${game.title}</p>
+        <p>  Product Price: ${game.price}</p>
+        </div>`;
+        })
+        .join(' ');
+        }
+        }
+
+        socket.on('productList', (data) => {
+        let html = makeProductList(data);
+        productsHtml.innerHTML = html;
+        });
+
+
+
+
+
+
+
+            //Dejo esta funcion comentada porque me sale en bucle cuando 
+            //agrego un producto y se agrega infinitamente, creo que se debe
+            // a que ago todo en el socket.on, pero nose si habria
+            //otra forma de poder hacerlo
+
+
+            {{!-- socket.on('todosLosProductos', async (data1) => {
+            let searchGame2 = data1.find(game => game.title === title)
+
+            socket.on('productList', (data2) => {
+            let findGame = data2.some(game => game.title === title)
+
+            if(!findGame){
+                let newProduct2 = { name: searchGame2.title, price: searchGame2.price }
+                console.log('juego agregado!')
+                socket.emit('addProduct', newProduct2)
+            }
+            else{
+                console.log('Juego ya existente!')
+            }
+
+            })
+            }) --}}
             
     
-    
-    
-
 </script>

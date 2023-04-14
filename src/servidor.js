@@ -52,8 +52,12 @@ socketServer.on('connection', socket => {
     socket.emit('productList', products);
 
 
-    socket.on('addProduct', async (data) => {
+    socket.on('addProduct', (data) => {
         products.push(data);
+        socket.emit('productList', products)
+    })
+    socket.on('deleteProduct', (data) => {
+        products = products.filter(game => game.name !== data )
         socket.emit('productList', products)
     })
 
