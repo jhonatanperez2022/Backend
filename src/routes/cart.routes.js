@@ -1,27 +1,16 @@
 import { Router } from "express";
-import CartManager from "../CartManager.js";
+import { deleteCart, deleteGameInCart, getOneCart, listCart, saveCart, saveGameInCart, updateCart, updateGameInCart } from "../controllers/cartController.js";
 
 const cartRouter = Router()
-const cart = new CartManager()
 
-cartRouter.post("/", async (req, res) => {
-    res.send(await cart.addCart())
-})
 
-cartRouter.get("/", async (req, res) => {
-    res.send(await cart.readCart())
-})
-
-cartRouter.get("/:id", async (req, res) => {
-    let cartId = req.params.id
-    res.send( await cart.getCartById(cartId))
-})
-
-cartRouter.post("/:cid/products/:pid", async (req, res) => {
-    let cartId = req.params.cid
-    let prodId = req.params.pid
-    res.send( await cart.addProductInCart(cartId, prodId))
-})
-
+cartRouter.post("/", saveCart)
+cartRouter.get("/", listCart)
+cartRouter.get("/:id", getOneCart)
+cartRouter.post("/:cid/products/:pid", saveGameInCart)
+cartRouter.delete("/:id", deleteCart)
+cartRouter.delete("/:cid/products/:pid", deleteGameInCart)
+cartRouter.put("/:id", updateCart)
+cartRouter.put("/:cid/products/:pid", updateGameInCart)
 
 export default cartRouter

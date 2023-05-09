@@ -4,18 +4,34 @@ import { resolve } from 'path';
 import { Server } from "socket.io";
 import gamesRouter from "./routes/products.routes.js";
 import cartRouter from "./routes/cart.routes.js";
-import ProductManager from "./ProductManager.js";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import { save } from "./controllers/productController.js";
+
+dotenv.config()
 
 
-const app = express();
+    mongoose.connect("mongodb+srv://thecapoflash:siemprenacional2022@chproject.q813agp.mongodb.net/?retryWrites=true&w=majority",
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(() => console.log( 'Database Connected' ))
+    .catch(err => console.log( err ));
 
-const games = new ProductManager()
+    const app = express();
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/products", gamesRouter)
-app.use("/api/cart", cartRouter)
+    app.use(express.json())
+    app.use(express.urlencoded({ extended: true }));
+    
+    app.use("/api/products", gamesRouter)
+    app.use("/api/cart", cartRouter)
+
+
+
+
+
 
 const viewsPath = resolve('src/views');
 
@@ -27,7 +43,7 @@ app.set('view engine', 'handlebars');
 app.set('views', viewsPath);
 
 app.get('/', async (req, res) => {
-    const allGames = await games.getProducts()
+    const allGames = save;
     res.render('home', {
         name: 'TricoJuegos',
         allGames: allGames
@@ -37,15 +53,19 @@ app.get('/', async (req, res) => {
 
 
 const products = []
-const todosLosProductos = await games.getProducts()
 
-const PORT = 8080;
-const httpServer = app.listen(PORT, () => {
-    console.log(`Local Host ${PORT}`)
-})
-const socketServer = new Server(httpServer);
+const todosLosProductos = save;
 
-socketServer.on('connection', socket => {
+
+    const PORT = 8080;
+    
+    const httpServer = app.listen(PORT, () => {
+        console.log(`Local Host ${PORT}`)
+    })
+    
+    const socketServer = new Server(httpServer);
+
+    socketServer.on('connection', socket => {
     console.log('Nuevo cliente conectado')
     
     socket.emit('todosLosProductos', todosLosProductos)
@@ -62,5 +82,3 @@ socketServer.on('connection', socket => {
     })
 
 })
-
-// httpServer.on("error", (error) => console.log(`Error del servidor ${error}`))
