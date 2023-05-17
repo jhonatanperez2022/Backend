@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import paginate from "mongoose-paginate-v2"
 
 const gamesCollection = 'products';
 
@@ -10,5 +11,7 @@ const GamesModel = new Schema ({
     stock: {type: Schema.Types.Number, require: true},
     enable: {type: Schema.Types.Boolean, default: true}
 })
+
+GamesModel.plugin(paginate);
 
 export default mongoose.model(gamesCollection, GamesModel);
