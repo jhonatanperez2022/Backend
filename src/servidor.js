@@ -7,6 +7,8 @@ import cartRouter from "./routes/cart.routes.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { save } from "./controllers/productController.js";
+import session from "express-session";
+import sessionRouter from "./routes/sessionRouter.js";
 
 dotenv.config()
 
@@ -24,9 +26,15 @@ dotenv.config()
 
     app.use(express.json())
     app.use(express.urlencoded({ extended: true }));
+    app.use(session({
+        secret: "js2022",
+        resave: true,
+        saveUninitialized: true
+    }));
     
     app.use("/api/products", gamesRouter)
     app.use("/api/cart", cartRouter)
+    app.use("/api/sessions", sessionRouter);
 
 
 
