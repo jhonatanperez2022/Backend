@@ -9,9 +9,15 @@ import dotenv from "dotenv";
 import { save } from "./controllers/productController.js";
 import session from "express-session";
 import sessionRouter from "./routes/sessionRouter.js";
+import errorHandler from "./middlewares/errorHandler.js";
+import fileStore  from "session-file-store";
 
 dotenv.config()
 
+
+    const SessionStorage = fileStore(session) 
+
+    const app = express();
 
     mongoose.connect("mongodb+srv://thecapoflash:siemprenacional2022@chproject.q813agp.mongodb.net/?retryWrites=true&w=majority",
     {
@@ -21,12 +27,12 @@ dotenv.config()
     .then(() => console.log( 'Database Connected' ))
     .catch(err => console.log( err ));
 
-    const app = express();
 
 
     app.use(express.json())
     app.use(express.urlencoded({ extended: true }));
     app.use(session({
+        store: new SessionStorage({ path: './sessions', ttl: 100, retires: 0 }),
         secret: "js2022",
         resave: true,
         saveUninitialized: true
@@ -35,6 +41,7 @@ dotenv.config()
     app.use("/api/products", gamesRouter)
     app.use("/api/cart", cartRouter)
     app.use("/api/sessions", sessionRouter);
+    app.use(errorHandler)
 
 
 
